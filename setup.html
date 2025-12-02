@@ -1,0 +1,131 @@
+
+<!DOCTYPE HTML>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thiết lập Blynk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #2f3e50;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      background-color: #34495e;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 90%;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      background-color: #ecf0f1;
+      color: #2c3e50;
+    }
+    input[type="submit"] {
+      background-color: #1abc9c;
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    input[type="submit"]:hover {
+      background-color: #16a085;
+    }
+    .note {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ecf0f1;
+      text-align: center;
+    }
+    .note span {
+      color: #2ecc71;
+      font-weight: bold;
+    }
+    .copyright {
+      font-size: 13px;
+      text-align: center;
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Thiết lập Blynk</h2>
+    <form method="get" action="configsave">
+      <label for="ssid_sta">Tên WiFi (SSID):</label>
+      <input id="ssid_sta" type="text" name="ssid_sta" required>
+
+      <label for="ssid_list">Chọn mạng WiFi:</label>
+      <select id="ssid_list" onchange="updatessid_sta()">
+        <option>-- Chọn WiFi khả dụng --</option>
+      </select>
+
+      <label for="pass_sta">Mật khẩu WiFi:</label>
+      <input type="text" name="pass_sta">
+
+      <label for="blynk_auth">Mã Token Blynk:</label>
+      <input type="text" name="blynk_auth" placeholder="a0b1c2d..." pattern="[-_a-zA-Z0-9]{32}" maxlength="32" required>
+
+      <input type="submit" value="Lưu cấu hình">
+    </form>
+
+    <p class="note">
+      Bạn gặp khó khăn khi sử dụng?<br>
+      Vui lòng gọi tới số <span>0975 315 322</span>
+    </p>
+    <p class="copyright">
+      © 2025 | Hệ thống báo cháy thông minh
+    </p>
+  </div>
+
+  <script>
+    window.onload = function() {
+      getWifiList();
+    };
+    function getWifiList() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          var ssidlist = JSON.parse(xhttp.responseText);
+          var select = document.getElementById("ssid_list");
+          for (var i = 0; i < ssidlist.length; ++i) {
+            select[select.length] = new Option(ssidlist[i], ssidlist[i]);
+          }
+        }
+      };
+      xhttp.open("GET", "/wifiscan.json", true);
+      xhttp.send();
+    }
+    function updatessid_sta() {
+      document.getElementById("ssid_sta").value = document.getElementById("ssid_list").value;
+    }
+  </script>
+</body>
+</html>
+
